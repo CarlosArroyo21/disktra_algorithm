@@ -55,104 +55,114 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              const SizedBox(
-                height: 50.0,
-              ),
-              Container(
-                color: Colors.blueAccent,
-                width: 150,
-                height: 150,
-              ),
-              const SizedBox(
-                height: 100.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  
-                  //Source city's comboBox
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text("Ciudad origen"),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      DropdownButton(
-                        hint: const Text("Ciudad origen..."),
-                        value: sourceCity,
-                        items: newCities.map<DropdownMenuItem>((city) => DropdownMenuItem(
-                          enabled: city.name != sourceCity && city.name != destinationCity,
-                          value: city.name,
-                          child: Text(city.name))).toList(),
-                        onChanged: (chosenCity) {
-                          setState(() {
-                            sourceCity = chosenCity;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
+      body: Container(
+        color: Colors.white,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                const SizedBox(
+                  height: 10.0,
+                ),
+                SizedBox(
+                  width: 150,
+                  height: 150,
+                  child: Image.asset("./assets/AlpinaLogo.png"),
+                ),
+                const SizedBox(
+                  height: 50.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    
+                    //Source city's comboBox
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Ciudad origen"),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        DropdownButton(
+                          hint: const Text("Ciudad origen..."),
+                          value: sourceCity,
+                          items: newCities.map<DropdownMenuItem>((city) => DropdownMenuItem(
+                            enabled: city.name != sourceCity && city.name != destinationCity,
+                            value: city.name,
+                            child: Text(city.name))).toList(),
+                          onChanged: (chosenCity) {
+                            setState(() {
+                              sourceCity = chosenCity;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
 
-                  //Destination city's comboBox
-                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text("Ciudad Destino"),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      DropdownButton(
-                        hint: const Text("Ciudad destino..."),
-                        value: destinationCity,
-                        items: newCities.map<DropdownMenuItem>((city) => DropdownMenuItem(
-                          enabled: city.name != sourceCity && city.name != destinationCity,
-                          value: city.name,
-                          child: Text(city.name))).toList(),
-                        onChanged: (chosenCity) {
-                          setState(() {
-                            destinationCity = chosenCity;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              
-              const SizedBox(
-                height: 50,
-              ),
-              //Calculate best route's button
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    calculateRoute();
-                  });
-                  
-                }, 
-                child: const Text(
-                  "Calcular mejor ruta",
-                  style: TextStyle(
-                    color: Colors.white
+                    //Destination city's comboBox
+                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Ciudad Destino"),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        DropdownButton(
+                          hint: const Text("Ciudad destino..."),
+                          value: destinationCity,
+                          items: newCities.map<DropdownMenuItem>((city) => DropdownMenuItem(
+                            enabled: city.name != sourceCity && city.name != destinationCity,
+                            value: city.name,
+                            child: Text(city.name))).toList(),
+                          onChanged: (chosenCity) {
+                            setState(() {
+                              destinationCity = chosenCity;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                
+                const SizedBox(
+                  height: 50,
+                ),
+                //Calculate best route's button
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      calculateRoute();
+                    });
+                    
+                  }, 
+                  child: const Text(
+                    "Calcular mejor ruta",
+                    style: TextStyle(
+                      color: Colors.white
+                    ),
                   ),
                 ),
-              ),
 
-              const SizedBox(
-                height: 30,
-              ),
-              Text(
-                bestDistance.isNaN
-                ? ""
-                : "La mejor ruta es: ${printRoute()} con $bestDistance Km."
-              ),
-            ],
+                const SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  bestDistance.isNaN
+                  ? ""
+                  : "La mejor ruta es: ${printRoute()} con $bestDistance Km."
+                ),
+                SizedBox(
+                  width: 450,
+                  height: 450,
+                  child: Image.asset("./assets/RoutesGraph.png"),
+                ),
+              ],
+            ),
           ),
         ),
       ),
