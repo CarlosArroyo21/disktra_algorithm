@@ -1,5 +1,5 @@
 
-import 'package:disktra_algorithm/Routes.dart' as d;
+import 'package:disktra_algorithm/Routes.dart' as routes_data;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -31,13 +31,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late List<d.City> newCities;
+  late List<routes_data.City> newCities;
   String? sourceCity, destinationCity;
+  double bestDistance = double.nan;
+  List<String> route = [];
 
   @override
   void initState() {
-    // TODO: implement initState
-    newCities = d.cities;
+    newCities = routes_data.cities;
     super.initState();
   }
   @override
@@ -130,7 +131,10 @@ class _MyHomePageState extends State<MyHomePage> {
               //Calculate best route's button
               ElevatedButton(
                 onPressed: () {
-                  calculateRoute();
+                  setState(() {
+                    calculateRoute();
+                  });
+                  
                 }, 
                 child: const Text(
                   "Calcular mejor ruta",
@@ -143,7 +147,11 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(
                 height: 30,
               ),
-              const Text("La mejor ruta es")
+              Text(
+                bestDistance.isNaN
+                ? ""
+                : "La mejor ruta es: ${printRoute()} con $bestDistance Km."
+              ),
             ],
           ),
         ),
@@ -152,56 +160,48 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   
   calculateRoute() {
-    /*
-    1. We obtain the source city.
-    2. We initialize a acumulated distance variable with 0.
-    3. We iterate within its linked routes
-    4. We sum the acum distance and we have to save the result of each route's
-    distance sum to compare them later and set the priority city to evaluate after.
-    5. 
     
-    */
-    
-    List<String> priorityQueue = [];
-    Map<String, int> cityDistances = {};
-    var citiesEvaluated = <String>[];
-    d.City initialCity = newCities.firstWhere((city) => city.name == sourceCity);
-    while (citiesEvaluated.length < newCities.length) {
+    List<double> distance = List<double>.filled(routes_data.cities.length, double.infinity);
+    int sourceCityIndex = routes_data.cities.indexWhere((city) => city.name == sourceCity);
+    distance[sourceCityIndex] = 0;
+    List<List<String>> paths = List<List<String>>.filled(routes_data.cities.length, List.empty(growable: true));
+    paths[sourceCityIndex] = [routes_data.cities.elementAt(sourceCityIndex).name];
+    List<int> priorityQueue = [sourceCityIndex];
+
+    while (priorityQueue.isNotEmpty) {
+
+      priorityQueue.sort((cityA, cityB) => distance[cityA].compareTo(distance[cityB]));
       
-      if(!citiesEvaluated.contains(initialCity.name)) {
-        citiesEvaluated.add(initialCity.name);
-      }
+      int currentCityIndex = priorityQueue.removeAt(0);
 
-      for (var route in initialCity.linkedRoutes) {
+      for (routes_data.Route route in routes_data.cities[currentCityIndex].linkedRoutes) {
+        
+        int nextCityindex = routes_data.cities.indexWhere((city) => city.name == route.destination);
+        double newDistance = distance[currentCityIndex] + route.distance;
 
-        if (!cityDistances.containsKey(route.destination)) {
-          cityDistances[route.destination] = route.distance;
-        } else {
-          cityDistances[route.destination] = cityDistances[route.destination]! + route.distance;
-        }
+        if (newDistance < distance[nextCityindex]) {
 
-        if (priorityQueue.isEmpty) {
-          priorityQueue.add(route.destination);
-        } else {
+          distance[nextCityindex] = newDistance;
 
-          int index = 0;
-          cityDistances.forEach((key, value) {
-            if (route.distance > value) {
-              index++;
-            }
-          });
+          priorityQueue.add(nextCityindex);
+
+          paths[nextCityindex] = List<String>.from(paths[currentCityIndex])..add(routes_data.cities[nextCityindex].name);
         }
       }
+    }
+    
+    int destinationCityIndex = routes_data.cities.indexWhere((city) => city.name == destinationCity);
+    bestDistance = distance[destinationCityIndex];
+    route = paths[destinationCityIndex];
 
+  }
+
+  String printRoute() {
+
+    if(route.isNotEmpty) {
+      return route.reduce((value, element) => "$value -> $element");
     }
 
-
-   
-    
-
-    
-
-
-    
+    return ""; 
   }
 }

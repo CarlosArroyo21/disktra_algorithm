@@ -22,13 +22,14 @@ final cities = [
       Route(
         destination: "Medellín",
         distance: 700
-      ),
+      ),  
       Route(
         destination: "Bucaramanga",
         distance: 600
       ),
     ]
   ),
+  
   City(
     name: "Medellín",
     linkedRoutes: [
